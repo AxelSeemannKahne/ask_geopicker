@@ -1,0 +1,146 @@
+class GeoMapWidget {
+    constructor(element) {
+        this.element = element;
+        this.latFieldName = element.dataset.latitudeField;
+        this.lonFieldName = element.dataset.longitudeField;
+        this.addressTemplate = element.dataset.addressTemplate;
+        this.form = element.closest('form');
+
+        this.configureMarkerIcon(element.dataset.markerIconBase);
+
+        this.latInput = this.findInput(this.latFieldName);
+        this.lonInput = this.findInput(this.lonFieldName);
+
+        this.mapElement = element.querySelector('.askgeo-map');
+        this.geocodeButton = element.querySelector('.askgeo-geocode-button');
+
+        setTimeout(() => {
+            this.createMap();
+            this.bindGeocodeButton();
+        }, 100);
+    }
+
+    configureMarkerIcon(iconBase) {
+        if (!iconBase) {
+            return;
+        }
+        L.Icon.Default.mergeOptions({
+            iconUrl: iconBase + 'marker-icon.png',
+            iconRetinaUrl: iconBase + 'marker-icon-2x.png',
+            shadowUrl: iconBase + 'marker-shadow.png',
+        });
+    }
+
+    findInput(fieldName) {
+        return this.form.querySelector(`[data-formengine-input-name*="[${fieldName}]"]`);
+    }
+
+    createMap() {
+        const lat = parseFloat(this.latInput.value);
+        const lon = parseFloat(this.lonInput.value);
+        const hasCoordinates = !isNaN(lat) && !isNaN(lon);
+
+        const center = hasCoordinates ? [lat, lon] : [51.1657, 10.4515];
+        const zoom = 18;
+
+        this.map = L.map(this.mapElement).setView(center, zoom);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+            maxZoom: 19,
+        }).addTo(this.map);
+
+        if (hasCoordinates) {
+            this.setOrMoveMarker(lat, lon);
+        }
+    }
+
+    bindGeocodeButton() {
+        if (!this.geocodeButton) {
+            return;
+        }
+        this.geocodeButton.addEventListener('click', () => this.handleGeocodeClick());
+    }
+
+    extractFieldNamesFromTemplate(template) {
+        const matches = template.match(/\{([a-zA-Z0-9_]+)\}/g) || [];
+        return matches.map((match) => match.slice(1, -1));
+    }
+
+    buildAddressFromTemplate(template) {
+        const fieldNames = this.extractFieldNamesFromTemplate(template);
+        let address = template;
+
+        for (const fieldName of fieldNames) {
+            const input = this.findInput(fieldName);
+            const value = input ? input.value : '';
+            address = address.replace(`{${fieldName}}`, value);
+        }
+
+        return address.trim();
+    }
+
+    async handleGeocodeClick() {
+        const address = this.buildAddressFromTemplate(this.addressTemplate);
+
+        if (!address) {
+            window.alert('Adresse ist leer.');
+            return;
+        }
+
+        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(address)}`;
+
+        let response;
+        try {
+            response = await fetch(url, {headers: {Accept: 'application/json'}});
+        } catch (error) {
+            window.alert('Geocoding fehlgeschlagen: Netzwerkfehler.');
+            return;
+        }
+
+        if (!response.ok) {
+            window.alert('Geocoding fehlgeschlagen: ' + response.status);
+            return;
+        }
+
+        const results = await response.json();
+        if (!results.length) {
+            window.alert('Keine Koordinaten gefunden für: ' + address);
+            return;
+        }
+
+        const lat = parseFloat(results[0].lat);
+        const lon = parseFloat(results[0].lon);
+
+        this.latInput.value = lat.toFixed(6);
+        this.lonInput.value = lon.toFixed(6);
+        this.latInput.dispatchEvent(new Event('change', {bubbles: true}));
+        this.lonInput.dispatchEvent(new Event('change', {bubbles: true}));
+
+        this.map.setView([lat, lon], 16);
+        this.setOrMoveMarker(lat, lon);
+    }
+
+    setOrMoveMarker(lat, lon) {
+        if (this.marker) {
+            this.marker.setLatLng([lat, lon]);
+            return;
+        }
+        this.marker = L.marker([lat, lon], {draggable: true}).addTo(this.map);
+        this.marker.on('dragend', () => {
+            const position = this.marker.getLatLng();
+            this.latInput.value = position.lat.toFixed(6);
+            this.lonInput.value = position.lng.toFixed(6);
+            this.latInput.dispatchEvent(new Event('change', {bubbles: true}));
+            this.lonInput.dispatchEvent(new Event('change', {bubbles: true}));
+        });
+    }
+}
+
+function initialize() {
+    document.querySelectorAll('.askgeo-widget').forEach((element) => {
+        new GeoMapWidget(element);
+    });
+}
+
+export default {initialize};

@@ -1,0 +1,13 @@
+.askgeo-widget {
+    margin-bottom: 1rem;
+}
+
+.askgeo-map {
+    height: 360px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.askgeo-geocode-button {
+    margin-top: 0.5rem;
+}
