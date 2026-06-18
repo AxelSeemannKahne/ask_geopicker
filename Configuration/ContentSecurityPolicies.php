@@ -13,11 +13,13 @@ use TYPO3\CMS\Core\Type\Map;
 return Map::fromEntries([
     Scope::backend(),
     new MutationCollection(
+        // allow map-tiles from CartoDB (Subdomains a/b/c/d) -> Wildcard
         new Mutation(
             MutationMode::Extend,
             Directive::ImgSrc,
-            new UriValue('https://*.tile.openstreetmap.org'),
+            new UriValue('https://*.basemaps.cartocdn.com'),
         ),
+        // allow geocoding on Nominatim
         new Mutation(
             MutationMode::Extend,
             Directive::ConnectSrc,
