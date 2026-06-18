@@ -49,6 +49,11 @@ final class GeoMapWidgetElement extends AbstractFormElement
         $result['stylesheetFiles'][] = 'EXT:ask_geopicker/Resources/Public/Css/geo-map-widget.css';
         $result['stylesheetFiles'][] = 'EXT:ask_geopicker/Resources/Public/Css/Contrib/leaflet.css';
 
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $this->pageRenderer->addInlineLanguageLabelFile(
+            'EXT:ask_geopicker/Resources/Private/Language/locallang.xlf'
+        );
+
         return $result;
     }
 }

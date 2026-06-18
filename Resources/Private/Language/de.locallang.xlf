@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="de" datatype="plaintext" original="EXT:ask_geo/Resources/Private/Language/locallang.xlf" product-name="ask_geo">
+        <header/>
+        <body>
+            <trans-unit id="askgeo.geocodeButton" resname="askgeo.geocodeButton" approved="yes">
+                <source>Find address on map</source>
+                <target>Adresse auf Karte finden</target>
+            </trans-unit>
+            <trans-unit id="askgeo.success.geocoding" resname="askgeo.success.geocoding">
+                <source>Geocoding successful</source>
+                <target>Geocoding erfolgreich</target>
+            </trans-unit>
+            <trans-unit id="askgeo.success.marker_moved" resname="askgeo.success.geocoding">
+                <source>Coordinates updated</source>
+                <target>Koordinaten aktualisiert</target>
+            </trans-unit>
+            <trans-unit id="askgeo.error.emptyAddress" resname="askgeo.error.emptyAddress" approved="yes">
+                <source>Address is empty.</source>
+                <target>Adresse ist leer.</target>
+            </trans-unit>
+            <trans-unit id="askgeo.error.network" resname="askgeo.error.network" approved="yes">
+                <source>Geocoding failed: network error</source>
+                <target>Geocoding fehlgeschlagen: Netzwerkfehler</target>
+            </trans-unit>
+            <trans-unit id="askgeo.error.failed" resname="askgeo.error.failed" approved="yes">
+                <source>Geocoding failed:</source>
+                <target>Geocoding fehlgeschlagen:</target>
+            </trans-unit>
+            <trans-unit id="askgeo.error.notFound" resname="askgeo.error.notFound" approved="yes">
+                <source>No coordinates found for:</source>
+                <target>Keine Koordinaten gefunden für:</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

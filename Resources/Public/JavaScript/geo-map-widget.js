@@ -1,3 +1,6 @@
+import Notification from '@typo3/backend/notification.js';
+import {lll} from '@typo3/core/lit-helper.js';
+
 class GeoMapWidget {
     constructor(element) {
         this.element = element;
@@ -14,7 +17,7 @@ class GeoMapWidget {
         this.mapElement = element.querySelector('.askgeo-map');
         this.geocodeButton = element.querySelector('.askgeo-geocode-button');
 
-        //wait for FormEngine to populate the field values
+        // wait for FormEngine to populate the field values
         setTimeout(() => {
             this.createMap();
             this.bindGeocodeButton();
@@ -98,7 +101,7 @@ class GeoMapWidget {
         const address = this.buildAddressFromTemplate(this.addressTemplate);
 
         if (!address) {
-            window.alert('Adresse ist leer.');
+            Notification.warning(lll('askgeo.error.emptyAddress'));
             return;
         }
 
@@ -108,18 +111,18 @@ class GeoMapWidget {
         try {
             response = await fetch(url, {headers: {Accept: 'application/json'}});
         } catch (error) {
-            window.alert('Geocoding fehlgeschlagen: Netzwerkfehler.');
+            Notification.error(lll('askgeo.error.network'));
             return;
         }
 
         if (!response.ok) {
-            window.alert('Geocoding fehlgeschlagen: ' + response.status);
+            Notification.error(lll('askgeo.error.failed'), String(response.status));
             return;
         }
 
         const results = await response.json();
         if (!results.length) {
-            window.alert('Keine Koordinaten gefunden für: ' + address);
+            Notification.info(lll('askgeo.error.notFound'), address);
             return;
         }
 
@@ -131,8 +134,11 @@ class GeoMapWidget {
         this.latInput.dispatchEvent(new Event('change', {bubbles: true}));
         this.lonInput.dispatchEvent(new Event('change', {bubbles: true}));
 
-        this.map.setView([lat, lon], 16);
+        this.map.setView([lat, lon], 18);
         this.setOrMoveMarker(lat, lon);
+
+        Notification.success(lll('askgeo.success.geocoding'));
+
     }
 
     setOrMoveMarker(lat, lon) {
@@ -147,6 +153,9 @@ class GeoMapWidget {
             this.lonInput.value = position.lng.toFixed(6);
             this.latInput.dispatchEvent(new Event('change', {bubbles: true}));
             this.lonInput.dispatchEvent(new Event('change', {bubbles: true}));
+
+            Notification.success(lll('askgeo.success.marker_moved'));
+
         });
     }
 }

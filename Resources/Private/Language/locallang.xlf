@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="EXT:ask_geo/Resources/Private/Language/locallang.xlf" product-name="ask_geo">
+        <header/>
+        <body>
+            <trans-unit id="askgeo.geocodeButton" resname="askgeo.geocodeButton">
+                <source>Find address on map</source>
+            </trans-unit>
+            <trans-unit id="askgeo.success.geocoding" resname="askgeo.success.geocoding">
+                <source>Geocoding successful</source>
+            </trans-unit>
+            <trans-unit id="askgeo.success.marker_moved" resname="askgeo.success.geocoding">
+                <source>Coordinates updated</source>
+            </trans-unit>
+            <trans-unit id="askgeo.error.emptyAddress" resname="askgeo.error.emptyAddress">
+                <source>Address is empty</source>
+            </trans-unit>
+            <trans-unit id="askgeo.error.network" resname="askgeo.error.network">
+                <source>Geocoding failed: network error</source>
+            </trans-unit>
+            <trans-unit id="askgeo.error.failed" resname="askgeo.error.failed">
+                <source>Geocoding failed:</source>
+            </trans-unit>
+            <trans-unit id="askgeo.error.notFound" resname="askgeo.error.notFound">
+                <source>No coordinates found for:</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
