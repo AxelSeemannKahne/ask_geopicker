@@ -14,6 +14,7 @@ class GeoMapWidget {
         this.mapElement = element.querySelector('.askgeo-map');
         this.geocodeButton = element.querySelector('.askgeo-geocode-button');
 
+        //wait for FormEngine to populate the field values
         setTimeout(() => {
             this.createMap();
             this.bindGeocodeButton();
@@ -40,8 +41,9 @@ class GeoMapWidget {
         const lon = parseFloat(this.lonInput.value);
         const hasCoordinates = !isNaN(lat) && !isNaN(lon);
 
-        const center = hasCoordinates ? [lat, lon] : [51.1657, 10.4515];
-        const zoom = 18;
+        // show world map if no coordinates are set
+        const center = hasCoordinates ? [lat, lon] : [20, 0];
+        const zoom = hasCoordinates ? 18 : 2;
 
         this.map = L.map(this.mapElement).setView(center, zoom);
 
@@ -50,9 +52,21 @@ class GeoMapWidget {
             maxZoom: 19,
         }).addTo(this.map);
 
+        // wait for container to have its size
+        this.observeResize();
+
         if (hasCoordinates) {
             this.setOrMoveMarker(lat, lon);
         }
+    }
+
+    observeResize() {
+        const observer = new ResizeObserver(() => {
+            if (this.mapElement.offsetWidth > 0 && this.mapElement.offsetHeight > 0) {
+                this.map.invalidateSize();
+            }
+        });
+        observer.observe(this.mapElement);
     }
 
     bindGeocodeButton() {
