@@ -17,11 +17,24 @@ class GeoMapWidget {
         this.mapElement = element.querySelector('.askgeo-map');
         this.geocodeButton = element.querySelector('.askgeo-geocode-button');
 
-        // wait for FormEngine to populate the field values
-        setTimeout(() => {
+        this.initWhenReady();
+    }
+
+    initWhenReady() {
+        if (this.latInput.dataset.formengineInputInitialized) {
             this.createMap();
             this.bindGeocodeButton();
-        }, 100);
+            return;
+        }
+        const check = () => {
+            if (this.latInput.dataset.formengineInputInitialized) {
+                this.createMap();
+                this.bindGeocodeButton();
+            } else {
+                requestAnimationFrame(check);
+            }
+        };
+        requestAnimationFrame(check);
     }
 
     configureMarkerIcon(iconBase) {
