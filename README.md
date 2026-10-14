@@ -68,7 +68,7 @@ After a successful geocode, `latitudeField` and `longitudeField` are updated aut
 
 ## How it works
 
-- The map is rendered using **Leaflet**; tiles are served by **CartoDB Voyager**.
+- The map is rendered using **Leaflet**; tiles are served by **OpenStreetMap** (no API key required).
 - When a record is opened, existing coordinates are shown as a draggable marker.
 - The marker can be **repositioned by drag-and-drop** — the coordinate fields update automatically.
 - Without coordinates the map shows a world view (zoom level 2).
@@ -81,7 +81,7 @@ The extension automatically registers the required CSP rules for the TYPO3 backe
 
 | Directive    | Allowed origin                                   |
 |--------------|--------------------------------------------------|
-| `img-src`    | `https://*.basemaps.cartocdn.com` (map tiles)    |
+| `img-src`    | `https://tile.openstreetmap.org` (map tiles)     |
 | `connect-src`| `https://nominatim.openstreetmap.org` (geocoding)|
 
 No manual CSP configuration is needed.
